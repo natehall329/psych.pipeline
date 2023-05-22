@@ -1,0 +1,17 @@
+Package: psych.pipeline
+Title: A Simple and Debuggable Data Analysis Framework for Working with Human Subjects Data
+Version: 0.1.0
+Authors@R: 
+    person("Nate", "Hall", , "nate.hall329@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-4598-8123"))
+Description: I created this package because writing reproducible data analysis code in a multi-step analytic process can be difficult and time consuming. I think most human subjects researchers are both a) concerned with increasing the transparency and readablility of our code and b) want to focus on writing the code we are using for our project rather than spending time generating complex analytic pipelines to wrap around our code. Personally, I've done this many times but want to move past this. The package is meant to use a functional programming framework coupled with a simple, yet flexible configuration setup to move data science efforts closer to the joy of analyzing data without sacrificing detailed logging and storage capabilities so we can stay organized along the way. Initially written for myself, but if you find yourself traversing a similar thought process when analyzing your data, this is the package for you!   
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Imports: 
+    bannerCommenter,
+    devtools,
+    pacman,
+    readr,
+    yaml

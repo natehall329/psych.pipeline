@@ -1,0 +1,47 @@
+# Editable parameters
+settings:
+  project: dimt_analysis
+  pipeline_description: "dimt_current"
+  timestamp: TRUE
+  run_on_hpc: FALSE
+  n_cores: 4  # number of cores to use for parallel computation
+  force: false  # flag to force a re-run of previous scripts across all steps
+  packages:
+    - experiment.pipeline
+    - rmatio
+
+# Paths
+path:
+  subject_list: 'data_raw/behav/dimt' # will either extract subjects from csv or remove file extensions from all files in a directory.
+  pipeline_fx: 'R'
+  log: 'outputs/pipeline_logfiles'  # Path where you want log files exported to. Pipeline appends an ID that is unique to a given submission, where we will funnel all reports.
+  output: 'data_proc' # Path to directory where the outputs from steps of the pipeline are sent to. Pipeline will create subfolders for each step along the way.
+
+# Specify stages in the pipeline. Note that these need to be specified in the order they will be executed!
+pipeline:
+  - func: import_master
+    print_output: TRUE
+    describe_text: 'Import Subject List from Master Spreadsheet'
+    force: TRUE # allows overwrite of the global force setting on this step.
+  - func: import_dimt_behavior
+    depends_on:
+      - import_master
+    arguments:
+      arl_master: depends_on[1]
+      n_cores: settings$n_cores
+    describe_text: 'Import and Tidy DimT behavior from .mat structure'
+    multiple_outputs: TRUE
+  - func: calc_winnings
+    depends_on:
+      - import_dimt_behavior
+    arguments:
+      behav_all: depends_on[1]
+    describe_text: "Calculate Earnings"
+    print_output: TRUE
+  # - func: import_proc_self_reports
+  #   depends_on:
+  #     - import_master
+  #   arguments:
+  #     arl_master: depends_on[1]
+
+
