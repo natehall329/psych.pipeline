@@ -28,7 +28,7 @@
 #'
 #' For each element in the `pipeline` section, the function sets default values for missing fields. The default values
 #' are `depends_on = "none"`, `print_output = FALSE`, `describe_text = element$func`, `arguments = list()`,
-#' `multiple_outputs = FALSE`, and `force = default_settings$force`.
+#' `subject_level = FALSE`, and `force = default_settings$force`.
 #'
 #' @note
 #' The function extracts unique subject identifiers by looking at filenames in a directory or by reading a .csv file.
@@ -60,11 +60,11 @@ configure_psych.pipeline <- function(yaml_path) {
     files <- files[!file.info(file.path(yaml_data$path$subject_list, files))$isdir]
 
     # Remove the file extensions to get the subject IDs
-    psych.pipe_subjects <- sub("\\..*", "", files)
+    yaml_data$data$subject_list <- sub("\\..*", "", files)
 
   } else if (yaml_data$subject_list$type == 'directory') {
     # Load the .csv file and put the subject IDs into the global environment
-    psych.pipe_subjects <- readr::read_csv(yaml_data$path$subject_list)
+    yaml_data$data$subject_list <- readr::read_csv(yaml_data$path$subject_list)
   }
 
   # Set default values for path section
@@ -134,11 +134,24 @@ configure_psych.pipeline <- function(yaml_path) {
     if (!"arguments" %in% names(element)) {
       element$arguments <- list()
     }
-    if (!"multiple_outputs" %in% names(element)) {
+    if (!"subject_level" %in% names(element)) {
       element$multiple_outputs <- FALSE
     }
     if (!"force" %in% names(element)) {
       element$force <- default_settings$force
+    }
+
+    # Loop over each argument of the pipeline step
+    for (arg in names(element$arguments)) {
+      # Check if the argument's value is a reference to a top-level part
+      if (grepl("\\$", element$arguments[[arg]])) {
+        # Split the reference into the top-level part's name and the key
+        parts <- strsplit(element$arguments[[arg]], "\\$")[[1]]
+        top_level_name <- parts[1]
+        key <- parts[2]
+        # Replace the reference with the actual value
+        element$arguments[[arg]] <- yaml_data[[top_level_name]][[key]]
+      }
     }
 
     # re-assign
