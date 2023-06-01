@@ -15,7 +15,7 @@ psych.pipeline_go(config)
 \item \code{arguments}: the arguments to be passed to the function.
 \item \code{depends_on}: dependencies of the function. It should be "none" if there are no dependencies.
 \item \code{force}: a boolean value indicating whether to re-run the function regardless of whether the output exists.
-\item \code{multiple_outputs}: a boolean indicating whether the function will output multiple files.
+\item \code{subject_level}: a boolean indicating whether the function will output multiple files.
 \item \code{print_output}: a boolean indicating whether to print the output of the function.
 }
 \item \code{path}: A list containing:
@@ -43,7 +43,7 @@ multi-output and single-output steps, and enforces re-run of specific steps if s
         arguments = list(arg1 = 1, arg2 = 2),
         depends_on = "none",
         force = TRUE,
-        multiple_outputs = TRUE,
+        subject_level = TRUE,
         print_output = FALSE
       ),
       list(
@@ -51,7 +51,7 @@ multi-output and single-output steps, and enforces re-run of specific steps if s
         arguments = list(arg1 = 3, arg2 = 4),
         depends_on = "myFunc1",
         force = FALSE,
-        multiple_outputs = FALSE,
+        subject_level = FALSE,
         print_output = TRUE
       )
     ),

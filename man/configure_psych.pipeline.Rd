@@ -31,7 +31,7 @@ For the \code{settings} section, the default values are \code{project = "untitle
 
 For each element in the \code{pipeline} section, the function sets default values for missing fields. The default values
 are \code{depends_on = "none"}, \code{print_output = FALSE}, \code{describe_text = element$func}, \code{arguments = list()},
-\code{multiple_outputs = FALSE}, and \code{force = default_settings$force}.
+\code{subject_level = FALSE}, and \code{force = default_settings$force}.
 }
 \note{
 The function extracts unique subject identifiers by looking at filenames in a directory or by reading a .csv file.
