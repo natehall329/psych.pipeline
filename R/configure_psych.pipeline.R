@@ -135,7 +135,7 @@ configure_psych.pipeline <- function(yaml_path) {
       element$arguments <- list()
     }
     if (!"subject_level" %in% names(element)) {
-      element$multiple_outputs <- FALSE
+      element$subject_level <- FALSE
     }
     if (!"force" %in% names(element)) {
       element$force <- default_settings$force

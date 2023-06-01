@@ -26,13 +26,28 @@ source_directory <- function(dir_path, recursive = TRUE) {
 
   # Check if there are any .R files
   if (length(r_files) > 0) {
+    # Find the length of the longest filename
+    max_length <- max(nchar(basename(r_files)))
+
+    # Generate a comment line of this length
+    comment_line <- paste0("##", strrep("—", max_length))
+
+    # Print the initial comment line
+    cat(comment_line, "\n")
+
     # Source each file
+    current_dir <- dirname(r_files[1])  # Initialize current_dir to the directory of the first file
     for (file in r_files) {
+      new_dir <- dirname(file)
+      if (new_dir != current_dir) {
+        cat(comment_line, "\n")  # Print a comment line when switching directories
+        current_dir <- new_dir
+      }
       cat("Sourcing:", file, "\n")
       source(file)
     }
-    cat("Sourced all .R files in the directory:", dir_path, "\n")
+    cat(comment_line, "\nSourced all .R files in the directory:", dir_path, "\n")
   } else {
-    cat("No .R files found in the directory:", dir_path, "\n")
+    cat(comment_line, "\nNo .R files found in the directory:", dir_path, "\n")
   }
 }
