@@ -53,17 +53,14 @@ launch_psych.pipeline <- function(yaml_path = NULL) {#, pipeline_description = "
   ###########################################################################
 
   # Print configuration and session information
-  print(bannerCommenter::section(paste0("settings and session info:\n\n", config$settings$project, " pipeline"), fold = FALSE))
+  print(bannerCommenter::section(paste0("psych.pipeline functions and session info\n\n\n project: ", config$settings$project, "\n\npipeline: ", config$settings$pipeline_description), fold = FALSE))
   print(bannerCommenter::open_box("Bring User-defined Functions Into Scope"))
 
   # Source all .R files in the "R" directory
   source_directory("R")
 
-  # Print pipeline configuration
-  print(bannerCommenter::open_box("PipelineConfiguration"))
-  list_tree(config)
-
   # Print session information
+  print(bannerCommenter::open_box("Session Info"))
   print(devtools::session_info(pkgs = "attached"))
 
   ############################################################################
@@ -77,11 +74,23 @@ launch_psych.pipeline <- function(yaml_path = NULL) {#, pipeline_description = "
   if(config$settings$run_on_hpc){
     # implement if needed
   } else {
-    cat("\n\n###########################################################################\n###########################################################################\n###                                                                     ###\n###                  RUNNING LOCALLY ON ", config$settings$n_cores, "CORES:                       ###\n###                                                                     ###\n###########################################################################\n###########################################################################\n\n\n")
+
+    # Print pipeline configuration
+    print(bannerCommenter::section(paste0("final configuration details for:\n\n", config$settings$pipeline_description)))
+    print(open_box("High-level Pipeline Settings"))
+    list_tree(config$settings)
+    print(open_box("Paths to Data and Output Locations"))
+    list_tree(config$path)
+    print(open_box("Step-by-Step Execution of Pipeline Elements"))
+    list_tree(config$pipeline)
+
+
+
 
     # Run pipeline!
+    print(bannerCommenter::section("running psych.pipeline locally on", config$settings$n_cores, "cores"))
     print("pipeline_go(config)")
-    # pipeline_go(config)
+    # psych.pipeline_go(config)
   }
 
   cat("\n\n\n############################################################################\n############################################################################\n###                                                                      ###\n###                               COMPLETE                               ###\n###                                                                      ###\n############################################################################\n############################################################################\n")
@@ -92,4 +101,14 @@ launch_psych.pipeline <- function(yaml_path = NULL) {#, pipeline_description = "
 }
 
 
+##---------------------
+##  NTH scratch below
+##---------------------
+
+# yaml_path = NULL
+# source("~/r_packages/psych.pipeline/R/list_tree.R")
+# source("~/r_packages/psych.pipeline/R/execute_log.R")
+# source("~/r_packages/psych.pipeline/R/source_directory.R")
+# source("~/r_packages/psych.pipeline/R/configure_psych.pipeline.R")
+# setwd("~/Documents/github_repos/arl_repos/dimt_analysis/")
 
