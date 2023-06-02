@@ -37,7 +37,9 @@ setup_subj_control <- function(config) {
   subj_control <- tibble(step = 1:length(config$pipeline),
                          func = names(config$pipeline),
                          run_subjects = list(subjects),
-                         data_destination = ifelse(sapply(config$pipeline, function(step){step$subject_level}),  file.path(config$path$output, names(config$pipeline)), file.path(config$path$output, paste0(names(config$pipeline), ".rds"))))
+                         data_destination = ifelse(sapply(config$pipeline, function(step){step$subject_level}),  file.path(config$path$output, names(config$pipeline)), file.path(config$path$output, paste0(names(config$pipeline), ".rds"))),
+                         log_destination = ifelse(sapply(config$pipeline, function(step){step$subject_level}),  file.path(config$path$log_full, names(config$pipeline)), file.path(config$path$log_full, paste0(names(config$pipeline), ".log"))),
+                         )
 
   for(st in 1:nrow(subj_control)){
     step <- config$pipeline[[st]]

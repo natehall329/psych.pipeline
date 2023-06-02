@@ -154,8 +154,11 @@ configure_psych.pipeline <- function(yaml_path) {
       }
     }
 
+    # tidy ordering of elements
+    element_order <- c("func", "describe_text", "subject_level", "depends_on", "arguments", "force", "print_output")
+
     # re-assign
-    pipeline[[e_num]] <- element
+    pipeline[[e_num]] <- element[element_order]
   }
 
   names(pipeline) <- sapply(pipeline, function(x) x$func)
