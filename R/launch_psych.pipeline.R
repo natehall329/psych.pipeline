@@ -15,6 +15,11 @@
 
 launch_psych.pipeline <- function(yaml_path = NULL) {#, pipeline_description = "psych.pipeline", run_on_hpc = FALSE, timestamp = TRUE) {
 
+  # # debug
+  yaml_path = NULL
+  setwd("~/Documents/github_repos/arl_repos/dimt_analysis/")
+  library(psych.pipeline)
+
   # Identify the YAML configuration file to use
   if(is.null(yaml_path)){
     yaml_files <- list.files(".", pattern = ".yaml$", full.names = TRUE, recursive = TRUE)
@@ -37,13 +42,6 @@ launch_psych.pipeline <- function(yaml_path = NULL) {#, pipeline_description = "
     dir.create(config$path$log_full, recursive = TRUE)
   }
 
-  # create high-level output
-  out_file <- file.path(config$path$log_full, "pipeline_execution_report.Rout")
-
-
-  # Start diverting output
-  sink(out_file)
-
   ###########################################################################
   ###########################################################################
   ###                                                                     ###
@@ -52,8 +50,16 @@ launch_psych.pipeline <- function(yaml_path = NULL) {#, pipeline_description = "
   ###########################################################################
   ###########################################################################
 
+  # create high-level output
+  settings_log <- file.path(config$path$log_full, "psych.pipeline_settings.log")
+  execution_log <- file.path(config$path$log_full, "psych.pipeline_execution.log")
+
+
+  # Start diverting output
+  sink(settings_log)
+
   # Print configuration and session information
-  print(bannerCommenter::section(paste0("psych.pipeline functions and session info\n\n\n project: ", config$settings$project, "\n\npipeline: ", config$settings$pipeline_description), fold = FALSE))
+  print(bannerCommenter::section(paste0("psych.pipeline functions and session info\n\n project: ", config$settings$project, "\npipeline execution label: ", config$settings$pipeline_description, "\n\nSEE:\n\n", execution_log, "\n\nand supporting execution logs for detailed progress reports"), fold = FALSE))
   print(bannerCommenter::open_box("Bring User-defined Functions Into Scope"))
 
   # Source all .R files in the "R" directory
@@ -69,9 +75,16 @@ launch_psych.pipeline <- function(yaml_path = NULL) {#, pipeline_description = "
   list_tree(config$settings)
   print(open_box("Paths to Data and Output Locations"))
   list_tree(config$path)
-  print(open_box("Step-by-Step Execution of Pipeline Elements"))
-  list_tree(config$pipeline)
 
+  # Go step-by step to give detailed info on each step of the pipeline
+  print(section("Step-by-Step Pipeline Config Settings"))
+
+  for(i in 1:length(config$pipeline)){
+    print(open_box(paste0(i, ": ", config$pipeline[[i]]$func)))
+    list_tree(config$pipeline[[i]])
+  }
+
+  sink()
 
   ############################################################################
   ############################################################################
@@ -81,31 +94,24 @@ launch_psych.pipeline <- function(yaml_path = NULL) {#, pipeline_description = "
   ############################################################################
   ############################################################################
 
+  # Start diverting output
+  sink(execution_log)
+
   if(config$settings$run_on_hpc){
-    # implement if needed using rslurm if needed
+    # implement using rslurm::slurm_apply
   } else {
 
     # Run pipeline!
-    print(bannerCommenter::section("running psych.pipeline locally on", config$settings$n_cores, "cores"))
+    print(bannerCommenter::section(paste0("running psych.pipeline locally on ", config$settings$n_cores, " cores\n\n"), "see:\n", settings_log, "\nfor detailed information about the pipeline configuration", fold = FALSE))
 
     print("pipeline_go(config)")
     # psych.pipeline_go(config)
   }
 
-  cat("\n\n\n############################################################################\n############################################################################\n###                                                                      ###\n###                               COMPLETE                               ###\n###                                                                      ###\n############################################################################\n############################################################################\n")
+  print(bannerCommenter::section("psych.pipeline execution complete", fold = FALSE))
 
   #end high-level output
   sink()
 
 }
-
-
-##---------------------
-##  NTH scratch below
-##---------------------
-
-# yaml_path = NULL
-# setwd("~/Documents/github_repos/arl_repos/dimt_analysis/")
-# library(psych.pipeline)
-
 

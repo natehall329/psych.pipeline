@@ -36,6 +36,11 @@ track_dependencies <- function(step_index, config, subj_control) {
     run_subjects <- list()
     for (dep in current_step$depends_on) {
       dep_index <- match(dep, names(config$pipeline)) # find index of dependent step
+
+      # stopifnot(paste0("Dependency mismatch: ", dep, " not contained within step names"), is.na(dep_index))
+      if (is.na(dep_index)) {
+        stop(paste0("Dependency mismatch in step: ", current_step$func, ". This dependency is not contained within previously specified step names: ", dep))
+      }
       run_subjects <- c(run_subjects, track_dependencies(dep_index, config, subj_control)) # recursively track dependencies
     }
     return(unique(run_subjects)) # ensure no duplicate subjects

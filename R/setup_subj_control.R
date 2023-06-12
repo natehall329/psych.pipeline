@@ -36,10 +36,15 @@ setup_subj_control <- function(config) {
   # initialize a data frame to be used later for determining which subjects to run
   subj_control <- tibble(step = 1:length(config$pipeline),
                          func = names(config$pipeline),
+                         subject_level = sapply(config$pipeline, function(x) {x$subject_level}),
                          run_subjects = list(subjects),
+                         arguments = lapply(config$pipeline, function(x) {x$arguments}),
                          data_destination = ifelse(sapply(config$pipeline, function(step){step$subject_level}),  file.path(config$path$output, names(config$pipeline)), file.path(config$path$output, paste0(names(config$pipeline), ".rds"))),
                          log_destination = ifelse(sapply(config$pipeline, function(step){step$subject_level}),  file.path(config$path$log_full, names(config$pipeline)), file.path(config$path$log_full, paste0(names(config$pipeline), ".log"))),
+                         describe_text = sapply(config$pipeline, function(x) {x$describe_text}),
+                         print_output = sapply(config$pipeline, function(x) {x$print_output})
                          )
+
 
   for(st in 1:nrow(subj_control)){
     step <- config$pipeline[[st]]
@@ -68,8 +73,12 @@ setup_subj_control <- function(config) {
     } else {
       cat("Step:", step$func, "does not list subjects to force run and has not set default to T/F - performing this step on all subjects!")
     }
+
+    ### mark subjects to run as NA when performing as single step.
+    subj_control$run_subjects[st] <- ifelse(!step$subject_level, NA, subj_control$run_subjects[st])
+
   }
 
-  return(subj_control)
+  return(list(subject_list = subjects, subj_control = subj_control))
 
 }
