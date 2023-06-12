@@ -51,22 +51,6 @@ configure_psych.pipeline <- function(yaml_path) {
 
   yaml_data <- yaml::yaml.load_file(yaml_path)
 
-  # # Extract unique subject identifiers to be run. Run this first since without a value specified the whole pipeline will stop.
-  # if (dir.exists(yaml_data$path$subject_list)) {
-  #   # Get the list of files in the directory
-  #   files <- list.files(yaml_data$path$subject_list, include.dirs = FALSE, all.files = FALSE)
-  #
-  #   # Filter out directories
-  #   files <- files[!file.info(file.path(yaml_data$path$subject_list, files))$isdir]
-  #
-  #   # Remove the file extensions to get the subject IDs
-  #   yaml_data$data$subject_list <- sub("\\..*", "", files)
-  #
-  # } else if (yaml_data$subject_list$type == 'directory') {
-  #   # Load the .csv file and put the subject IDs into the global environment
-  #   yaml_data$data$subject_list <- readr::read_csv(yaml_data$path$subject_list)
-  # }
-
   # Set default values for path section
   default_path <- list(
     pipeline_fx = "R",
@@ -91,7 +75,8 @@ configure_psych.pipeline <- function(yaml_path) {
     pipeline_description = "psych.pipeline",
     timestamp = TRUE,
     n_cores = 1,
-    force = FALSE
+    force = FALSE,
+    print_wide = FALSE
    # packages
   )
 
