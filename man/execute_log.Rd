@@ -2,36 +2,43 @@
 % Please edit documentation in R/execute_log.R
 \name{execute_log}
 \alias{execute_log}
-\title{Execute R Code with Error/Warning Logging}
+\title{Execute a block of code and log the output}
 \usage{
-execute_log(code, log_path = NULL, output_path = NULL, describe_text = NULL)
+execute_log(
+  code,
+  log_path = NULL,
+  output_path = NULL,
+  describe_text = NULL,
+  display_runtime = TRUE
+)
 }
 \arguments{
-\item{code}{An R expression or block of code to be executed. Typically a function of an analytic pipeline.}
+\item{code}{The code block to execute. This should be a function or other executable R object.}
 
-\item{log_path}{Character string. Path to the log file where errors and warnings are to be written.
-If NULL (default), output is written to the console.}
+\item{log_path}{(Optional) A character string specifying the path to the file where the log should be written.
+If NULL (the default), no log file is created.}
 
-\item{output_path}{Character string. Path to the RDS file where the output of the code is to be stored.
-If NULL (default), the output is not stored.}
+\item{output_path}{(Optional) A character string specifying the path to the file where the output should be saved.
+If NULL (the default), the output is not saved to a file.}
 
-\item{describe_text}{Character string. A description text to include in the log output.
-If NULL (default), no description text is added.}
+\item{describe_text}{(Optional) A character string that will be printed before the code execution.
+It's typically used to describe the purpose or function of the code block.
+If NULL (the default), no descriptive text is printed.}
+
+\item{display_runtime}{(Optional) A logical value indicating whether the runtime of the code block should be printed.
+If TRUE (the default), the runtime is printed.}
 }
 \value{
-If there is an error or warning during code execution, a \code{try-error} or \code{simpleWarning} object is returned,
-respectively. If the code executes successfully, the output of the code is returned.
+The output of the executed code block. If \code{output_path} is provided, the output is also saved to the specified file.
 }
 \description{
-This function executes an R expression or block of code, logging errors and warnings.
-It optionally logs output to a specified file and stores the output in a RDS file.
+This function takes a block of code, executes it, and logs the output, along with any warnings or errors.
+It can optionally also measure the runtime of the code block and save the output to a file.
 }
 \examples{
 \dontrun{
-  execute_log({print("Hello, world!")}, log_path = "my_log.txt")
+execute_log({print("Hello, World!")}, log_path = "log.txt", output_path = "output.txt",
+            describe_text = "Printing a greeting", display_runtime = TRUE)
 }
 
-}
-\author{
-Nate Hall
 }
